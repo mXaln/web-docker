@@ -1,0 +1,57 @@
+version: '3.1'
+
+services:
+  web:
+    build:
+      context: .
+    depends_on:
+      - db
+      - php
+    ports:
+      - 80:80
+      - 443:443
+      - 8001:8001
+    volumes:
+      - /var/www/html:/var/www/html
+      - ./web/nginx:/etc/nginx/conf.d
+      - ./web/ssl:/etc/nginx/ssl
+      - ./web/redis/redis.conf:/etc/redis/redis.conf
+
+  php:
+    build: 
+      context: .
+      dockerfile: PhpDockerfile
+    volumes:
+        - /var/www/html/:/var/www/html
+        - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+
+  db:
+    build:
+      context: .
+      dockerfile: DbDockerfile
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd-22
+      MYSQL_DATABASE: vmast
+      MYSQL_USER: vmast
+      MYSQL_PASSWORD: P@ssw0rd-22
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./db/conf:/etc/mysql/mysql.conf.d
+      - ./db/backup:/backup
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    ports:
+      - 8081:80
+volumes:
+  dbdata:
