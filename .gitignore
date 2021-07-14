@@ -24,3 +24,6 @@ demos/
 extras/documentation
 
 *.gpg
+
+db/backup/counter
+db/backup/dater

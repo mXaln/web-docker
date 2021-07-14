@@ -57,7 +57,7 @@ else
 	fi
 fi
 
-# compress and encypt
+# compress and encrypt
 tar -cvzf - $CURDATE | gpg --batch --yes --symmetric --passphrase P@ssw0rd-22 --cipher-algo aes256 -o $CURDATE.tar.gz.gpg
 
 # decrypt and decompress

@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:1.21.1
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh && \
     bash nodesource_setup.sh && rm nodesource_setup.sh
