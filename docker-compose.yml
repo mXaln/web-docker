@@ -24,7 +24,7 @@ services:
       dockerfile: PhpDockerfile
     container_name: php
     volumes:
-        - /var/www/html/:/var/www/html
+        - /var/www/html:/var/www/html
         - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
 
   db:

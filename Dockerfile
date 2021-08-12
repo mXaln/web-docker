@@ -8,7 +8,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     apt-get remove yarn && apt-get update && apt-get install -y yarn
 
 RUN apt-get update && apt-get install -y nodejs
-RUN apt-get update && apt-get install -y redis nano procps
+RUN apt-get update && apt-get install -y redis nano procps sendmail
 RUN yarn global add pm2
 
 WORKDIR /var/www/html
