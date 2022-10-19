@@ -5,6 +5,7 @@ services:
     build:
       context: .
     container_name: web
+    platform: linux/amd64
     depends_on:
       - db
       - php
@@ -13,7 +14,7 @@ services:
       - 443:443
       - 8001:8001
     volumes:
-      - /var/www/html:/var/www/html
+      - ./htdocs:/var/www/html
       - ./web/nginx:/etc/nginx/conf.d
       - ./web/ssl:/etc/nginx/ssl
       - ./web/redis/redis.conf:/etc/redis/redis.conf
@@ -23,8 +24,9 @@ services:
       context: .
       dockerfile: PhpDockerfile
     container_name: php
+    platform: linux/amd64
     volumes:
-        - /var/www/html:/var/www/html
+        - ./htdocs:/var/www/html
         - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
 
   db:
@@ -32,6 +34,7 @@ services:
       context: .
       dockerfile: DbDockerfile
     container_name: db
+    platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: P@ssw0rd-22
       MYSQL_DATABASE: vmast
@@ -47,12 +50,14 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: pma
+    platform: linux/amd64
     links:
       - db
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 512M
     ports:
       - 8081:80
 volumes:
