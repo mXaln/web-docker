@@ -41,7 +41,7 @@ services:
       MYSQL_USER: vmast
       MYSQL_PASSWORD: P@ssw0rd-22
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
       - dbdata:/var/lib/mysql
       - ./db/conf:/etc/mysql/mysql.conf.d
@@ -50,7 +50,6 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: pma
-    platform: linux/amd64
     links:
       - db
     environment:
@@ -60,5 +59,13 @@ services:
       UPLOAD_LIMIT: 512M
     ports:
       - 8081:80
+      
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+
 volumes:
   dbdata:
