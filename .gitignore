@@ -27,3 +27,5 @@ extras/documentation
 
 db/backup/counter
 db/backup/dater
+
+.env

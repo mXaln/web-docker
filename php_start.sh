@@ -1,4 +1,4 @@
 #!/bin/bash
 
-php composer.phar update
+sudo -u www-data php composer.phar update
 php-fpm
