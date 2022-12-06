@@ -7,7 +7,8 @@ function base_backup {
 	PREVDATE=$(date +%Y-%m-%d -d "-30 days")
 
 	# Delete backups older than 30 days
-	if ls $DIR/$PREVDATE* 1> /dev/null 2>&1; then
+	if ls $DIR/$PREVDATE* 1> /dev/null 2>&1
+	then
 		rm -r $DIR/$PREVDATE*
 	fi
 
@@ -17,7 +18,7 @@ function base_backup {
 	echo 0 > $DIR/counter
 	echo $CURDATE > $DIR/dater
 
-	xtrabackup --user=root --password=P@ssw0rd-22 \
+	xtrabackup --user=root --password=$DB_ROOT_PASS \
 		--ssl-mode=PREFERRED --backup \
 		--target-dir=$DIR/$CURDATE/base \
 		--extra-lsndir=$DIR/$CURDATE
@@ -32,7 +33,8 @@ echo "|...................$RUNDATE...................|"
 echo "|---------------------------------------------------------|"
 echo "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
 
-if [ ! -f $DIR/counter ]; then
+if [ ! -f $DIR/counter ]
+then
 	# if folder is empty, create base backup
 	base_backup
 else
@@ -40,13 +42,14 @@ else
 	CURDATE=`cat $DIR/dater`
 
 	# Create incremental backups every hour
-	if [ $COUNTER != "23" ]; then
+	if [ $COUNTER != "23" ]
+	then
 		let COUNTER+=1
 		echo $COUNTER > $DIR/counter
 
 		mkdir $DIR/$CURDATE/incr$COUNTER
 
-		xtrabackup --user=root --password=P@ssw0rd-22 \
+		xtrabackup --user=root --password=$DB_ROOT_PASS \
 			--ssl-mode=PREFERRED --backup \
 			--incremental-basedir=$DIR/$CURDATE \
 			--target-dir=$DIR/$CURDATE/incr$COUNTER \
@@ -58,10 +61,7 @@ else
 fi
 
 # compress and encrypt
-tar -cvzf - $CURDATE | gpg --batch --yes --symmetric --passphrase P@ssw0rd-22 --cipher-algo aes256 -o $CURDATE.tar.gz.gpg
-
-# decrypt and decompress
-# gpg --batch --yes --passphrase P@ssw0rd-22 -d $CURDATE.tar.xz.gpg | tar xJvf -
+tar -cvzf - $CURDATE | gpg --batch --yes --symmetric --passphrase $DB_ROOT_PASS --cipher-algo aes256 -o $CURDATE.tar.gz.gpg
 
 echo "."
 echo "."
